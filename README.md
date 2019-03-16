@@ -1,0 +1,2 @@
+# seisFinder
+seismic finding
