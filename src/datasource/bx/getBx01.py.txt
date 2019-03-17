@@ -1,0 +1,20 @@
+import sys
+
+sys.path.append('D:\prjs_all\my_app\prjs_edk')
+
+import pyedk
+
+#ok
+#pyedk.bx.job_get_miniseed_tree.about()
+
+#rps="SC@CD2@2016-11-25_14:00:00@2016-11-25_14:20:00@SC-CD2-12345"
+#pyedk.bx.job_get_miniseed_tree.bxGet2(rps)
+
+sInDir='c:/pub/pyRds/bx.0/wave'
+sOutDir='c:/pub/pyRds/bx.0/web'
+sNet="SC"
+sSta="CD2"
+sDt0='2016-11-25_14:00:00'
+sDt1='2016-11-25_14:20:00'
+sOutFilePrefix='SC-CD2-123456'
+pyedk.bx.job_get_miniseed_tree.bxGet(sInDir,sOutDir,sNet,sSta,sDt0,sDt1,sOutFilePrefix)

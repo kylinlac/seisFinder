@@ -1,0 +1,2 @@
+python getNetSta.py
+pause

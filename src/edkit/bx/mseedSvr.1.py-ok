@@ -1,0 +1,46 @@
+import os,sys,time,datetime,stat
+import tornado.ioloop
+import tornado.web
+import pymongo
+import gridfs
+
+class indexHandler(tornado.web.RequestHandler):
+  def get(self):
+    self.write("Hello, get miniseed ...")
+
+class msHandler(tornado.web.RequestHandler):
+  def get(self,rps):
+    #self.write(rps)
+    mc=pymongo.MongoClient("10.16.160.223",27017)
+    db=mc.bx_syc
+    sNet="YN"
+    sYear="2013"
+    sTb="bx_%s_%s"%(sNet,sYear)
+    ftb=gridfs.GridFS(db,sTb)
+    sSta="KMI"
+    sLine="BHZ"
+    sJday="100"
+    sMs0="%s.%s.00.%s.D.%s.%s"%(sNet,sSta,sLine,sYear,sJday)
+
+    doc1=ftb.find_one({"file":sMs0})
+    if doc1==None :
+      print "not exist:",sMs0
+      self.write("0")
+    print doc1.file
+    res=doc1.length
+    #res=doc1.file
+    print res
+    self.write(str(res))
+
+
+app=tornado.web.Application([
+(r"/",indexHandler),
+(r"/ms/(.+)",msHandler),
+])
+
+if __name__=="__main__":
+  print "start web on 8801"
+  app.listen(8801)
+  tornado.ioloop.IOLoop.instance().start()
+
+

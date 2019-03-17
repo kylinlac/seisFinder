@@ -1,0 +1,2 @@
+python readSAC.py
+pause
