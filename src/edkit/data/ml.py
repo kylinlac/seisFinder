@@ -1,5 +1,13 @@
 '''
 read/load/fetch data
+
+read: file
+load: dump
+fetch: mysql
+get: restful
+request: web service
+rpc: RPC (?call)
+
 '''
 
 import os
