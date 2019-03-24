@@ -5,10 +5,11 @@ Created on Sun Mar 24 10:39:30 2019
 @author: wjb
 """
 
-import os,sys
+#import os,sys
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdate
 import cartopy.crs as ccrs
-
+import pandas as pd
 
 def ml_Convert_csv_to_sfml2__easy(inFile,outFile):
     yjob=False
@@ -90,13 +91,32 @@ def ml_Convert_csv_to_sfml2(inFile,outFile):
                 print("lat>70",d1s)
                 continue
 
-            d2=",".join(d1.replace("-",",").replace(":",",").split(",")[:10])+"\n"   
+            d1a=d1.replace("-",",").replace(":",",").split(",")[:10]
+            d2=",".join(d1a)+"\n"   
             
             if d1s[4].strip() in ('','999'):
                 print("*depth-999,empty",d1s)
-                idxEdit+=1
-                d1a=d1.replace("-",",").replace(":",",").split(",")[:10]
+                idxEdit+=1                
                 d1a[8]='  0'
+                d2=",".join(d1a)+"\n"
+
+            #hour
+            if int(float(d1a[3])) >23:
+                print("*seconds>=60",d1s)
+                idxEdit+=1
+                d1a[3]='  23'
+                d2=",".join(d1a)+"\n"
+            #min
+            if int(float(d1a[4])) >59:
+                print("*seconds>=60",d1s)
+                idxEdit+=1
+                d1a[4]=' 59'
+                d2=",".join(d1a)+"\n"
+            #sec
+            if int(float(d1a[5])) >59:
+                print("*seconds>=60",d1s)
+                idxEdit+=1
+                d1a[5]=' 59'
                 d2=",".join(d1a)+"\n"
             
             data0.append(d2)
@@ -175,7 +195,7 @@ def ml_Read(infile):
     return nd;
     
 
-def testing_ML_Draw_01():
+def testing_ML_Draw_xy_01():
     data1=ml_Read("ml_1965_2018.sfml2")
     if data1 :
         lons=[float(d[7]) for d in data1]
@@ -223,7 +243,7 @@ def testing_GIS_Draw_02():
     plt.savefig("testing_GIS_Draw_02.png")
     
     
-def testing_ML_Draw_02():
+def testing_ML_Draw_gis_02():
     data1=ml_Read("ml_1965_2018.sfml2")
     if data1 :
         lons=[float(d[7]) for d in data1]
@@ -250,7 +270,7 @@ def testing_ML_Draw_02():
         plt.savefig("testing_ML_Draw_02.png")
     
     
-def testing_ML_Draw_03(xi=60,xx=150,yi=0,yx=70):
+def testing_ML_Draw_gis_03(xi=60,xx=150,yi=0,yx=70):
     data1=ml_Read("ml_1965_2018.sfml2")
     if data1 :
         lons=[float(d[7]) for d in data1]
@@ -262,10 +282,10 @@ def testing_ML_Draw_03(xi=60,xx=150,yi=0,yx=70):
         ax.set_extent([xi-1, xx+1, yi-1, yx+1], crs=ccrs.PlateCarree())   
         ax.stock_img()     
         ax.scatter(lons,lats,shsi,c='yellow',alpha=0.5,edgecolors='red', transform=ccrs.PlateCarree())              
-        plt.savefig("testing_ML_Draw_03.png")
+        plt.savefig("testing_ML_Draw_gis_03.png")
     
  
-def testing_ML_Draw_04_chuandian(mx=0,xi=90,xx=115,yi=15,yx=35):
+def testing_ML_Draw_gis_04_chuandian(mx=0,xi=90,xx=115,yi=15,yx=35):
     data1=ml_Read("ml_1965_2018.sfml2")
     if data1 :
         data2=[d for d in data1 if float(d[7])>xi and float(d[7])<xx and float(d[6])>yi and float(d[6])<yx and float(d[9])>mx ]
@@ -282,10 +302,62 @@ def testing_ML_Draw_04_chuandian(mx=0,xi=90,xx=115,yi=15,yx=35):
         ax.set_extent([xi-1, xx+1, yi-1, yx+1], crs=ccrs.PlateCarree())    
         ax.stock_img()    
         ax.scatter(lons,lats,shsi,c='yellow',alpha=0.5,edgecolors='red', transform=ccrs.PlateCarree())             
-        plt.savefig("testing_ML_Draw_04_chuandian.png")
+        plt.savefig("testing_ML_Draw_gis_04.png")
     
     
+def testing_ML_Draw_mt_01(mx=0,xi=90,xx=115,yi=15,yx=35):
+    data1=ml_Read("ml_1965_2018.sfml2")
+    if data1 :
+        data2=[d for d in data1 if float(d[7])>xi and float(d[7])<xx and float(d[6])>yi and float(d[6])<yx and float(d[9])>mx ]
+        print("count: ",len(data1),len(data2))
     
+        #lons=[float(d[7]) for d in data2]
+        #lats=[float(d[6]) for d in data2]
+        shsi=[float(d[9]) for d in data2]
+              
+        fig = plt.figure(figsize=(24, 8))
+        xs=range(len(shsi))
+        #plt.bar(xs,shsi,width=0.1) ok
+        plt.vlines(xs,[0],shsi,color='blue') #[3]=ymin,shsi=ymax
+        
+        plt.savefig("testing_ML_Draw_mt_01.png")
+        
+    
+def testing_ML_Draw_mt_02(mx=0,xi=90,xx=115,yi=15,yx=35):
+    data1=ml_Read("ml_1965_2018.sfml2")
+    if data1 :
+        data2=[d for d in data1 if float(d[7])>xi and float(d[7])<xx and float(d[6])>yi and float(d[6])<yx and float(d[9])>mx ]
+        print("count: ",len(data1),len(data2))
+    
+        #lons=[float(d[7]) for d in data2]
+        #lats=[float(d[6]) for d in data2]
+        shsi=[float(d[9]) for d in data2]
+        dts=[mdate.datetime.datetime(int(d[0]),int(d[1]),int(d[2]),int(d[3]),int(d[4]),int(float(d[5]))) for d in data2]
+        ''' debug
+        for i,v in enumerate(data2):
+            v5=int(float(v[5]))
+            print(v)
+            print(i,v5)
+        '''
+        fig = plt.figure(figsize=(50, 8))
+        ax = fig.add_subplot(1, 1, 1)
+        #fig.xaxis.set_major_formatter(mdate.DateFormatter('%Y-%m-%d %H:%M:%S'))#设置时间标签显示格式
+        ax.xaxis.set_major_formatter(mdate.DateFormatter('%Y-%m-%d'))#设置时间标签显示格式
+        #plt.bar(xs,shsi,width=0.1) ok
+        plt.vlines(dts,[0],shsi,color='blue') #[3]=ymin,shsi=ymax
+        #plt.xticks(freq='1year')
+        #plt.xticks(pd.date_range(dts[0],dts[-1],freq='Y'))
+        '''
+        dt1=mdate.datetime.datetime(1960,1,1,0,0,0)
+        dt2=mdate.datetime.datetime(2020,1,1,0,0,0)
+        plt.xticks(pd.date_range(dt1,dt2,freq='Y'))
+        '''
+        dt12=[mdate.datetime.datetime(y,1,1,0,0,0) for y in range(1960,2020) ]
+        plt.xticks(dt12)
+        plt.xticks(rotation=60)
+        plt.savefig("testing_ML_Draw_mt_02.png")
+        
+        
 ####running...
 #883603-->880219-->870996 -> 867673 (--> 868478)
 #ml_Convert_csv_to_sfml2("china_ml.csv","ml_1965_2018.sfml2")
@@ -301,6 +373,7 @@ def testing_ML_Draw_04_chuandian(mx=0,xi=90,xx=115,yi=15,yx=35):
 #testing_ML_Draw_03()    
 
 #testing_ML_Draw_04_chuandian(4.9+0.05)
-testing_ML_Draw_04_chuandian(4.9+0.05,60,150,0,70)
+#testing_ML_Draw_gis_04_chuandian(4.9+0.05,60,150,0,70)
 
-        
+#testing_ML_Draw_mt_01(4.9)    
+testing_ML_Draw_mt_02(4.9)      
