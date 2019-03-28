@@ -1,31 +1,3 @@
-'''
-read/load/fetch data
-
-read: file
-load: dump
-fetch: mysql
-get: restful
-request: web service
-rpc: RPC (?call)
-
-**built in
-ml_convert-*
-
-**user api
-mlRead
-
-
-'''
-
-
-import os
-import sys
-import pickle
-
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdate
-import cartopy.crs as ccrs
-import pandas as pd
 
 
 '''
@@ -41,8 +13,6 @@ def mlRead_eqt(eqtFile):
     return data2
 '''
 
-
-#--------------------------------------------
 
 
 '''
@@ -74,158 +44,6 @@ def ml_Convert_csv_to_sfml2__easy(inFile,outFile):
     if yjob == False:
         print("error to break")
 '''
-def ml_Convert_csv_to_sfml2(inFile,outFile):
-    yjob=False
-    data0=[]
-    idx=0
-    idxEdit=0
-    with open(inFile,mode='r', encoding='UTF-8') as f1:
-        data1=f1.readlines()
-        #data2=[d.replace("-",",").replace(":",",").split(",")[:10] for d in data1]
- 
-        for i,d1 in enumerate(data1):
-            #1965-01-02,08:24:00.00, 26.800, 100.900,999, 2.5,
-            #0          1            2       3       4    5
-            
-            d1s=d1.split(',')
-            if len(d1s)<6 :
-                idx+=1
-                continue
-            
-            if d1s[5].strip()=='':
-                print("m-empty",d1s)
-                idx+=1
-                continue
-            
-            #skip -0.0
-            m=float(d1s[5])
-            if m< 0.1:
-                idx+=1
-                print("m<0",d1s)
-                continue
-                        
-            lon=float(d1s[3])
-            lat=float(d1s[2])
-            #print(d1,d1s)
-            #print(lon,lat)
-            
-            if lon<10: #10
-                idx+=1
-                print("lon<60",d1s)
-                continue
-            if lon>170: #140
-                idx+=1
-                print("lon>140",d1s)
-                continue
-            if lat<0: 
-                idx+=1
-                print("lat<0",d1s)
-                continue
-            if lat >70:
-                idx+=1
-                print("lat>70",d1s)
-                continue
-
-            d1a=d1.replace("-",",").replace(":",",").split(",")[:10]
-            d2=",".join(d1a)+"\n"   
-            
-            if d1s[4].strip() in ('','999'):
-                print("*depth-999,empty",d1s)
-                idxEdit+=1                
-                d1a[8]='  0'
-                d2=",".join(d1a)+"\n"
-
-            #hour
-            if int(float(d1a[3])) >23:
-                print("*seconds>=60",d1s)
-                idxEdit+=1
-                d1a[3]='  23'
-                d2=",".join(d1a)+"\n"
-            #min
-            if int(float(d1a[4])) >59:
-                print("*seconds>=60",d1s)
-                idxEdit+=1
-                d1a[4]=' 59'
-                d2=",".join(d1a)+"\n"
-            #sec
-            if int(float(d1a[5])) >59:
-                print("*seconds>=60",d1s)
-                idxEdit+=1
-                d1a[5]=' 59'
-                d2=",".join(d1a)+"\n"
-            
-            data0.append(d2)
-            
-        
-        yjob=True
-        print("ok: *edit,delete ",idxEdit,idx)
-
-    with open(outFile,"w") as f2:
-        f2.writelines(data0)
-        ##f2.close()
-    
-    if yjob == False:
-        print("error to break")
-        
-
-#--------------------------------------
-
-
-def ml_Dump_list2file(data1,outFile):
-  output = open(outFile, 'wb')
-  pickle.dump(data1, output)
-  # Pickle the list using the highest protocol available.
-  #pickle2.dump(data1, output, -1)
-  output.close()
-
-def ml_Dump_file2file(inFile,outFile):
-  f1=open(inFile,"r")
-  data1=f1.readlines()
-  f1.close()
-  
-  ml_Dump_list2file(data1,outFile)
-
-
-def ml_Load(inFile):
-  pkl_file = open(inFile, 'rb')
-  data1 = pickle.load(pkl_file)
-  #pprint.pprint(data1)
-  #data2 = pickle.load(pkl_file)
-  #pprint.pprint(data2)
-  pkl_file.close()
-  return data1
-
-
-#--------------------------------------------------------
-  
-def ml_Read_sfml2(infile):
-    with open(infile) as f1:
-        data1=f1.readlines()
-        data2=[d.split(",") for d in data1] #include \n
-        return data2    
-    nd=[]
-    return nd;
-
-
-def ml_Read_sfml2_checkOnly(infile):
-    poss=[]
-    with open(infile) as f1:
-        data1=f1.readlines()
-        
-        for i,v in enumerate(data1):
-            vs=v.split(',')
-            print(i,vs)
-            lon=float(vs[7])
-            lat=float(vs[6])
-            print(lon,lat)   
-    return poss
-
-#------------------------------------------
-    
-
-def mlFetch_xx(sUrl):
-    data1=[]
-    return data1
 
 
 '''
@@ -238,16 +56,14 @@ def mlLoad(sPath):
     return data1
 '''
 
-def mlLoad_ml_1965(sPath):
-    sFile=os.path.join(sPath,"ml","ml_1965_2018.pkl")        
-    data1=ml_Load(sFile)
-    return data1
+
+'''
+dataMs6=ml.mlLoad_Stock_ms6(sDataPath)
+print(dataMs6)
+'''
 
 
-
-#------------------------------------------------
-
-
+'''
 def ml_Draw_file2png(infile):
     #poss=[]
     with open(infile) as f1:
@@ -257,15 +73,14 @@ def ml_Draw_file2png(infile):
         shsi=[float(d.split(",")[9])*5 for d in data1]
         #poss=zip(lons,lats)    
         
-        '''
+        
         for i,v in enumerate(data1):
             vs=v.split(',')
             print(i,vs)
             lon=float(vs[7])
             lat=float(vs[6])
             print(lon,lat)
-        '''
-    
+          
     #print(list(poss)[:10])
     #return poss
         
@@ -277,7 +92,83 @@ def ml_Draw_file2png(infile):
 
         plt.scatter(lons,lats,shsi)
         plt.savefig("p2.png")
+'''        
     
+    
+'''
+def testing_GIS_Draw_01():
+    fig = plt.figure(figsize=(10, 5))
+    ax = fig.add_subplot(1, 1, 1, projection=ccrs.Robinson())
+
+    # make the map global rather than have it zoom in to
+    # the extents of any plotted data
+    ax.set_global()
+
+    ax.stock_img()
+    ax.coastlines()
+
+    ax.plot(-0.08, 51.53, 'o', transform=ccrs.PlateCarree())
+    ax.plot([-0.08, 132], [51.53, 43.17], transform=ccrs.PlateCarree())
+    ax.plot([-0.08, 132], [51.53, 43.17], transform=ccrs.Geodetic())    
+    plt.savefig("testing_GIS_Draw_01.png")
+'''
+
+'''  
+def testing_GIS_Draw_02():   
+    plt.figure(figsize=(6, 3))
+    ax = plt.axes(projection=ccrs.Mollweide(central_longitude=105.0))
+    ax.coastlines(resolution='110m')   
+    ax.gridlines()    
+    plt.savefig("testing_GIS_Draw_02.png")
+'''
+
+'''
+def testing_ML_Draw_gis_02():
+    data1=ml_Read_sfml2("ml_1965_2018.sfml2")
+    if data1 :
+        lons=[float(d[7]) for d in data1]
+        lats=[float(d[6]) for d in data1]
+        shsi=[float(d[9])*5 for d in data1]
+        
+        
+        fig = plt.figure(figsize=(50, 25))
+        ax = fig.add_subplot(1, 1, 1, projection=ccrs.Robinson(central_longitude=105.0))
+    
+        # make the map global rather than have it zoom in to
+        # the extents of any plotted data
+        ax.set_global()
+    
+        ax.stock_img()
+        ax.coastlines()
+    
+        #ax.plot(-0.08, 51.53, 'o', transform=ccrs.PlateCarree())
+        #ax.plot([-0.08, 132], [51.53, 43.17], transform=ccrs.PlateCarree())
+        #ax.plot([-0.08, 132], [51.53, 43.17], transform=ccrs.Geodetic())   
+        ax.scatter(lons,lats,shsi,c='yellow',alpha=0.5,edgecolors='red', transform=ccrs.PlateCarree())
+        
+        
+        plt.savefig("testing_ML_Draw_02.png")
+'''
+
+
+def ml_ML_Draw_gis_04_chuandian(mx=0,xi=90,xx=115,yi=15,yx=35):
+    data1=ml_Read_sfml2("ml_1965_2018.sfml2")
+    if data1 :
+        data2=[d for d in data1 if float(d[7])>xi and float(d[7])<xx and float(d[6])>yi and float(d[6])<yx and float(d[9])>mx ]
+        print("count: ",len(data1),len(data2))
+    
+        lons=[float(d[7]) for d in data2]
+        lats=[float(d[6]) for d in data2]
+        shsi=[float(d[9])*10 for d in data2]
+        
+        #data2=list(zip(lons,lats,shsi))
+        
+        fig = plt.figure(figsize=(15, 10))
+        ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
+        ax.set_extent([xi-1, xx+1, yi-1, yx+1], crs=ccrs.PlateCarree())    
+        ax.stock_img()    
+        ax.scatter(lons,lats,shsi,c='yellow',alpha=0.5,edgecolors='red', transform=ccrs.PlateCarree())             
+        plt.savefig("testing_ML_Draw_gis_04.png")
 
 def testing_ML_Draw_xy_01():
     data1=ml_Read_sfml2("ml_1965_2018.sfml2")
@@ -300,60 +191,8 @@ def testing_ML_Draw_xy_01():
         fig.set_size_inches(18.5, 10.5)        
         #plt.savefig("testing_ML_Draw_01.png")
         plt.savefig("testing_ML_Draw_01b.png")
-  
-    
-def testing_GIS_Draw_01():
-    fig = plt.figure(figsize=(10, 5))
-    ax = fig.add_subplot(1, 1, 1, projection=ccrs.Robinson())
 
-    # make the map global rather than have it zoom in to
-    # the extents of any plotted data
-    ax.set_global()
 
-    ax.stock_img()
-    ax.coastlines()
-
-    ax.plot(-0.08, 51.53, 'o', transform=ccrs.PlateCarree())
-    ax.plot([-0.08, 132], [51.53, 43.17], transform=ccrs.PlateCarree())
-    ax.plot([-0.08, 132], [51.53, 43.17], transform=ccrs.Geodetic())    
-    plt.savefig("testing_GIS_Draw_01.png")
-    
-    
-def testing_GIS_Draw_02():   
-    plt.figure(figsize=(6, 3))
-    ax = plt.axes(projection=ccrs.Mollweide(central_longitude=105.0))
-    ax.coastlines(resolution='110m')   
-    ax.gridlines()    
-    plt.savefig("testing_GIS_Draw_02.png")
-    
-    
-def testing_ML_Draw_gis_02():
-    data1=ml_Read_sfml2("ml_1965_2018.sfml2")
-    if data1 :
-        lons=[float(d[7]) for d in data1]
-        lats=[float(d[6]) for d in data1]
-        shsi=[float(d[9])*5 for d in data1]
-        
-  
-        fig = plt.figure(figsize=(50, 25))
-        ax = fig.add_subplot(1, 1, 1, projection=ccrs.Robinson(central_longitude=105.0))
-    
-        # make the map global rather than have it zoom in to
-        # the extents of any plotted data
-        ax.set_global()
-    
-        ax.stock_img()
-        ax.coastlines()
-    
-        #ax.plot(-0.08, 51.53, 'o', transform=ccrs.PlateCarree())
-        #ax.plot([-0.08, 132], [51.53, 43.17], transform=ccrs.PlateCarree())
-        #ax.plot([-0.08, 132], [51.53, 43.17], transform=ccrs.Geodetic())   
-        ax.scatter(lons,lats,shsi,c='yellow',alpha=0.5,edgecolors='red', transform=ccrs.PlateCarree())
-        
-        
-        plt.savefig("testing_ML_Draw_02.png")
-    
-    
 def testing_ML_Draw_gis_03(xi=60,xx=150,yi=0,yx=70):
     data1=ml_Read_sfml2("ml_1965_2018.sfml2")
     if data1 :
@@ -367,8 +206,7 @@ def testing_ML_Draw_gis_03(xi=60,xx=150,yi=0,yx=70):
         ax.stock_img()     
         ax.scatter(lons,lats,shsi,c='yellow',alpha=0.5,edgecolors='red', transform=ccrs.PlateCarree())              
         plt.savefig("testing_ML_Draw_gis_03.png")
-    
- 
+
 def testing_ML_Draw_gis_04_chuandian(mx=0,xi=90,xx=115,yi=15,yx=35):
     data1=ml_Read_sfml2("ml_1965_2018.sfml2")
     if data1 :
@@ -387,7 +225,7 @@ def testing_ML_Draw_gis_04_chuandian(mx=0,xi=90,xx=115,yi=15,yx=35):
         ax.stock_img()    
         ax.scatter(lons,lats,shsi,c='yellow',alpha=0.5,edgecolors='red', transform=ccrs.PlateCarree())             
         plt.savefig("testing_ML_Draw_gis_04.png")
-    
+
     
 def testing_ML_Draw_mt_01(mx=0,xi=90,xx=115,yi=15,yx=35):
     data1=ml_Read_sfml2("ml_1965_2018.sfml2")
@@ -405,9 +243,9 @@ def testing_ML_Draw_mt_01(mx=0,xi=90,xx=115,yi=15,yx=35):
         plt.vlines(xs,[0],shsi,color='blue') #[3]=ymin,shsi=ymax
         
         plt.savefig("testing_ML_Draw_mt_01.png")
-        
-    
-def testing_ML_Draw_mt_02(mx=0,xi=90,xx=115,yi=15,yx=35):
+
+
+def mlDraw_mt__easy(mx=0,xi=90,xx=115,yi=15,yx=35):
     data1=ml_Read_sfml2("ml_1965_2018.sfml2")
     if data1 :
         data2=[d for d in data1 if float(d[7])>xi and float(d[7])<xx and float(d[6])>yi and float(d[6])<yx and float(d[9])>mx ]
@@ -442,3 +280,5 @@ def testing_ML_Draw_mt_02(mx=0,xi=90,xx=115,yi=15,yx=35):
         plt.savefig("testing_ML_Draw_mt_02.png")
         
   
+    
+    
