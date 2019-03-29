@@ -283,7 +283,8 @@ def mlDraw_Grid_count(data1,outFile,xi=10,xx=170,stepLon=1,yi=0,yx=70,stepLat=1)
     #10-170,0-70
     xm,ym=np.meshgrid(np.arange(xi,xx+1,stepLon),np.arange(yi,yx+1,stepLat))
     #ym,xm=np.meshgrid(np.arange(xi,xx,stepLon),np.arange(yi,yx,stepLat)) #??70,160 -> 160,70   xx
-    zm=np.zeros(xm.shape,dtype=float)
+    #zm=np.zeros(xm.shape,dtype=float) xx log10(0.0)=inf
+    zm=np.ones(xm.shape,dtype=float) 
     
     for i,d1 in enumerate(data1):
         lon=float(d1[7])
@@ -325,5 +326,30 @@ def mlDraw_Grid_count(data1,outFile,xi=10,xx=170,stepLon=1,yi=0,yx=70,stepLat=1)
     '''    
     
     
+def mlDraw_Heatmap_count_XX(data1,outFile,xi=10,xx=170,stepLon=1,yi=0,yx=70,stepLat=1):
+    xm,ym=np.meshgrid(np.arange(xi,xx+1,stepLon),np.arange(yi,yx+1,stepLat))
+    zm=np.ones(xm.shape,dtype=float) 
     
+    for i,d1 in enumerate(data1):
+        lon=float(d1[7])
+        lat=float(d1[6])
+        lonIdx=int((lon-(xi-stepLon/2))/stepLon)
+        latIdx=int((lat-(yi-stepLat/2))/stepLat)
+        zm[latIdx][lonIdx]+=1
+
+    zm2=np.log10(zm)    
+    '''
+    #flip up/down
+    row=zm2.shape[0]    
+    for i in range(row // 2):
+        zm2[i], zm2[row-1-i] = zm2[row-1-i], zm2[i]  
+    '''    
+    plt.imshow(zm2)
+        
+    fig = plt.gcf()
+    fig.set_size_inches(20, 12)  
+    plt.savefig(outFile)
+    
+
+       
     
