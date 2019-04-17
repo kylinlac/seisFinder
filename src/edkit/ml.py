@@ -21,6 +21,7 @@ mlRead
 import os
 #import sys
 import pickle
+import zipfile
 
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdate
@@ -152,6 +153,31 @@ def ml_Load(inFile):
   pkl_file.close()
   return data1
 
+def ml_Load_inZip(inFile):
+  #zf=os.path.basename(inFile)
+  zf=inFile
+  zfd="ml_pkl"
+  #dfn="ml_1965_2018.sfml2"
+  dfn="ml_1965_2018.pkl"
+
+  azip=zipfile.ZipFile(zf)
+  #print(azip.filename)
+  #print(azip.namelist())
+
+  qzf_info=azip.getinfo(zfd+"/"+dfn)
+  #qzf_info=azip.getinfo(dfn)
+  #print(qzf_info.file_size)
+  #print(qzf_info.compress_size)
+
+  #ml2=azip.read(zfd+"/"+dfn).decode('utf-8')
+  ml2=azip.read(zfd+"/"+dfn)
+  #print(ml2[:100])
+  
+  data1 = pickle.loads(ml2)
+  #pprint.pprint(data1)
+  #data2 = pickle.load(pkl_file)
+  #pprint.pprint(data2)
+  return data1
 
 #--------------------------------------------------------
   
@@ -176,6 +202,19 @@ def ml_Read_sfml2_checkOnly(infile):
             lat=float(vs[6])
             print(lon,lat)   
     return poss
+
+def ml_Read_sfml2_inZip(infile):
+    zf=infile
+    zfd="ml_sfml2"
+    dfn="ml_1965_2018.sfml2"
+
+    azip=zipfile.ZipFile(zf)
+    ml2=azip.read(zfd+"/"+dfn).decode('utf-8')
+    
+    data1=ml2.splitlines(True) #True=keep n/rn,False=delete n/rn
+    data2=[d.split(",") for d in data1] #include \n
+    return data2    
+    
 
 #------------------------------------------
 

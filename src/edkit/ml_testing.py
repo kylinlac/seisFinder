@@ -158,7 +158,15 @@ ml.mlDraw_Heatmap_count(data1c,ml_heatmap_count_05,90,110,0.5,20,35,0.5)
 #883603-->880219-->870996 -> 867673 (--> 868478)
 #ml_Convert_csv_to_sfml2("china_ml.csv","ml_1965_2018.sfml2")
 
-    
+''' ok
+outfile_ml_1965=os.path.join(sDataPath,"ml_pkl.zip")
+data1=ml.ml_Load_inZip(outfile_ml_1965)
+print(data1[:10])    
+'''
+
+outfile_ml_1965=os.path.join(sDataPath,"ml_sfml2.zip")
+data1=ml.ml_Read_sfml2_inZip(outfile_ml_1965)
+print(data1[:10])    
 
 
 
