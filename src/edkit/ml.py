@@ -17,9 +17,10 @@ mlRead
 
 '''
 
-
 import os
-#import sys
+import sys
+import datetime
+
 import pickle
 import zipfile
 
@@ -31,7 +32,13 @@ import numpy as np
 
 
 #--------------------------------------------
+#sfml1
+#1965-01-02,08:24:00.00, 26.800, 100.900,999, 2.5,
+#0          1            2       3       4    5
 
+#sfml2
+#1965,01,02,08,24,00.00, 26.800, 100.900,  0, 2.5
+#0   ,1 ,2 ,3 ,4 ,5    ,6      ,7       ,8  ,9
 
 def ml_Convert_csv_to_sfml2(inFile,outFile):
     yjob=False
@@ -164,7 +171,8 @@ def ml_Load_inZip(inFile):
   #print(azip.filename)
   #print(azip.namelist())
 
-  qzf_info=azip.getinfo(zfd+"/"+dfn)
+  #ok
+  #qzf_info=azip.getinfo(zfd+"/"+dfn)
   #qzf_info=azip.getinfo(dfn)
   #print(qzf_info.file_size)
   #print(qzf_info.compress_size)
@@ -217,15 +225,130 @@ def ml_Read_sfml2_inZip(infile):
     
 
 #------------------------------------------
+#sfml2
+#1965,01,02,08,24,00.00, 26.800, 100.900,  0, 2.5
+#0   ,1 ,2 ,3 ,4 ,5    ,6      ,7       ,8  ,9
 
-def mlFilter_sfml2_m(data1,mi=0,mx=10):   
-    data2=[d for d in data1 if float(d[9])>mi and float(d[9])<mx]
+def mlFilter_sfml2_m(data1,mi=-5.0,mx=15):   
+    #data2=[d for d in data1 if float(d[9])>=mi and float(d[9])<mx]
+    data2=[d for d in data1 if mi<=float(d[9])<mx]
     return data2
+
    
 def mlFilter_sfml2_lonlat(data1,xi=59,xx=171,yi=0,yx=70):
-    data2=[d for d in data1 if float(d[7])>xi and float(d[7])<xx and float(d[6])>yi and float(d[6])<yx]
+    #data2=[d for d in data1 if float(d[7])>=xi and float(d[7])<xx and float(d[6])>=yi and float(d[6])<yx]
+    data2=[d for d in data1 if xi<=float(d[7])<xx and yi<=float(d[6])<yx]
     return data2
+
+  
+def mlFilter_sfml2_dt(data1,dt1=datetime.datetime(1965,1,1,0,0,0),dt2=datetime.datetime(2019,1,1,0,0,0)):
+    data2=[]
+    '''
+    if any(dt1)==False:
+        return data2
+    if any(dt2)==False:
+        return data2
+    '''
+    if isinstance(dt1,datetime.datetime) :
+        return data2
     
+    if isinstance(dt2,datetime.datetime) :
+        return data2
+        
+    data2=[d for d in data1 if dt1<=datetime.datetime(int(d[0]),int(d[1]),int(d[2]),int(d[3]),int(d[4]),int(float(d[5])))<dt2]
+    return data2
+
+
+def mlFilter_sfml2_depth(data1,di=-33.0,dx=1000.0):
+    #data2=[d for d in data1 if float(d[8])>=di and float(d[8])<dx ]
+    data2=[d for d in data1 if di<=float(d[8])<dx ]
+    return data2
+
+    
+#------------------------------------------
+#sfml2
+#1965,01,02,08,24,00.00, 26.800, 100.900,  0, 2.5
+#0   ,1 ,2 ,3 ,4 ,5    ,6      ,7       ,8  ,9
+
+def ml_Abstract_sfml2_year(data1):
+    data2=[]
+    if data1 :   
+        data2=[int(d[0]) for d in data1]
+    return data2;    
+
+def ml_Abstract_sfml2_month(data1):
+    data2=[]
+    if data1 :   
+        data2=[int(d[1]) for d in data1]
+    return data2;    
+
+def ml_Abstract_sfml2_day(data1):
+    data2=[]
+    if data1 :   
+        data2=[int(d[2]) for d in data1]
+    return data2;    
+
+def ml_Abstract_sfml2_date(data1):
+    data2=[]
+    if data1 :   
+        data2=[datetime.date(d[0],d[1],d[2]) for d in data1]
+    return data2;    
+
+def ml_Abstract_sfml2_hour(data1):
+    data2=[]
+    if data1 :   
+        data2=[int(d[3]) for d in data1]
+    return data2;    
+
+def ml_Abstract_sfml2_minute(data1):
+    data2=[]
+    if data1 :   
+        data2=[int(d[4]) for d in data1]
+    return data2;    
+
+def ml_Abstract_sfml2_second(data1):
+    data2=[]
+    if data1 :   
+        data2=[float(d[5]) for d in data1]
+    return data2;    
+
+def ml_Abstract_sfml2_time(data1):
+    data2=[]
+    if data1 :   
+        data2=[datetime.time(d[3],d[4],d[5]) for d in data1]
+    return data2;    
+
+def ml_Abstract_sfml2_datetime(data1):
+    data2=[]
+    if data1 :   
+        data2=[datetime.datetime(d[0],d[1],d[2],d[3],d[4],d[5]) for d in data1]
+    return data2;    
+
+
+def ml_Abstract_sfml2_lat(data1):
+    data2=[]
+    if data1 :   
+        data2=[float(d[6]) for d in data1]
+    return data2;    
+
+def ml_Abstract_sfml2_lon(data1):
+    data2=[]
+    if data1 :   
+        data2=[float(d[7]) for d in data1]
+    return data2;    
+
+def ml_Abstract_sfml2_depth(data1):
+    data2=[]
+    if data1 :   
+        data2=[float(d[8]) for d in data1]
+    return data2;    
+
+def ml_Abstract_sfml2_mag(data1):
+    data2=[]
+    if data1 :   
+        data2=[float(d[9]) for d in data1]
+    return data2;    
+
 #------------------------------------------
 
 '''
@@ -241,7 +364,8 @@ def mlLoad_ml_1965(sPath):
 
 
 #------------------------------------------------
-
+#_easy=export image file
+    
 def mlDraw_hyperCenter_withGIS__easy(data1,outFile,scaleSym,bGlobal,xi=60,xx=150,yi=0,yx=70):
     if data1 :   
         lons=[float(d[7]) for d in data1]
@@ -294,6 +418,7 @@ def mlDraw_mt__easy(data1,outFile):
 
         fig = plt.figure(figsize=(20, 9))
         ax = fig.add_subplot(1, 1, 1)
+        plt.subplots_adjust(left=0.03, right=0.97, top=0.97, bottom=0.12)
         #fig.xaxis.set_major_formatter(mdate.DateFormatter('%Y-%m-%d %H:%M:%S'))#设置时间标签显示格式
         ax.xaxis.set_major_formatter(mdate.DateFormatter('%Y-%m-%d'))#设置时间标签显示格式
         #plt.bar(xs,shsi,width=0.1) ok
