@@ -280,5 +280,55 @@ def mlDraw_mt__easy(mx=0,xi=90,xx=115,yi=15,yx=35):
         plt.savefig("testing_ML_Draw_mt_02.png")
         
   
-    
+    #timedelta do not suporrt month,only days down...
+def mlDraw_mt__easy(data1,outFile):
+    #full year
+    if data1 :   
+        shsi=[float(d[9]) for d in data1]
+        dts=[mdate.datetime.datetime(int(d[0]),int(d[1]),int(d[2]),int(d[3]),int(d[4]),int(float(d[5]))) for d in data1]
+
+        fig = plt.figure(figsize=(20, 9))
+        ax = fig.add_subplot(1, 1, 1)
+        plt.subplots_adjust(left=0.03, right=0.97, top=0.97, bottom=0.12)
+        ax.xaxis.set_major_formatter(mdate.DateFormatter('%Y-%m-%d'))#设置时间标签显示格式
+        plt.vlines(dts,[0],shsi,color='blue') #[3]=ymin,shsi=ymax
+         
+        #dt12=[mdate.datetime.datetime(y,1,1,0,0,0) for y in range(1965,2020) ]
+        year1=int(data1[0][0])
+        year2=int(data1[-1][0])+1
+        
+        if (year2-year1)>=10 :        
+            dt12=[mdate.datetime.datetime(y,1,1,0,0,0) for y in range(year1,year2) ]
+            plt.xticks(dt12)
+            plt.xticks(rotation=90)
+
+        if 3<(year2-year1)<10 :
+            dt12=[]
+            dtNo=mdate.datetime.datetime(year1,1,1,0,0,0)
+            dt2=mdate.datetime.datetime(year2,1,1,0,0,0)
+            while(dtNo<dt2):
+                dt12.append(dtNo)
+                dtNo=dtNo+mdate.datetime.timedelta(monthes=6)
+
+            dt12=[mdate.datetime.datetime(y,1,1,0,0,0) for y in range(year1,year2) ]
+            plt.xticks(dt12)
+            plt.xticks(rotation=90)
+
+        if (year2-year1)<=3 :
+            dt12=[]
+            dtNo=mdate.datetime.datetime(year1,1,1,0,0,0)
+            dt2=mdate.datetime.datetime(year2,1,1,0,0,0)
+            while(dtNo<dt2):
+                dt12.append(dtNo)
+                dtNo=dtNo+mdate.datetime.timedelta(monthes=6)
+
+            dt12=[mdate.datetime.datetime(y,1,1,0,0,0) for y in range(year1,year2) ]
+            plt.xticks(dt12)
+            plt.xticks(rotation=90)
+            
+        #plt.savefig("testing_ML_Draw_mt_02.png")
+        plt.savefig(outFile)
+    else:
+        print("no data ...")        
+
     

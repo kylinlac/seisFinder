@@ -241,7 +241,7 @@ def mlFilter_sfml2_lonlat(data1,xi=59,xx=171,yi=0,yx=70):
     return data2
 
   
-def mlFilter_sfml2_dt(data1,dt1=datetime.datetime(1965,1,1,0,0,0),dt2=datetime.datetime(2019,1,1,0,0,0)):
+def mlFilter_sfml2_datetime(data1,dt1=datetime.datetime(1965,1,1,0,0,0),dt2=datetime.datetime(2019,1,1,0,0,0)):
     data2=[]
     '''
     if any(dt1)==False:
@@ -249,10 +249,10 @@ def mlFilter_sfml2_dt(data1,dt1=datetime.datetime(1965,1,1,0,0,0),dt2=datetime.d
     if any(dt2)==False:
         return data2
     '''
-    if isinstance(dt1,datetime.datetime) :
+    if isinstance(dt1,datetime.datetime)==False :
         return data2
     
-    if isinstance(dt2,datetime.datetime) :
+    if isinstance(dt2,datetime.datetime)==False :
         return data2
         
     data2=[d for d in data1 if dt1<=datetime.datetime(int(d[0]),int(d[1]),int(d[2]),int(d[3]),int(d[4]),int(float(d[5])))<dt2]
@@ -410,28 +410,52 @@ def mlDraw_hyperCenter__easy(data1,outFile,scaleSym=1):
                
     
 def mlDraw_mt__easy(data1,outFile):
+    #full year
     if data1 :   
-        #lons=[float(d[7]) for d in data2]
-        #lats=[float(d[6]) for d in data2]
         shsi=[float(d[9]) for d in data1]
         dts=[mdate.datetime.datetime(int(d[0]),int(d[1]),int(d[2]),int(d[3]),int(d[4]),int(float(d[5]))) for d in data1]
 
         fig = plt.figure(figsize=(20, 9))
         ax = fig.add_subplot(1, 1, 1)
         plt.subplots_adjust(left=0.03, right=0.97, top=0.97, bottom=0.12)
-        #fig.xaxis.set_major_formatter(mdate.DateFormatter('%Y-%m-%d %H:%M:%S'))#设置时间标签显示格式
         ax.xaxis.set_major_formatter(mdate.DateFormatter('%Y-%m-%d'))#设置时间标签显示格式
-        #plt.bar(xs,shsi,width=0.1) ok
         plt.vlines(dts,[0],shsi,color='blue') #[3]=ymin,shsi=ymax
+         
+        #dt12=[mdate.datetime.datetime(y,1,1,0,0,0) for y in range(1965,2020) ]
+        year1=int(data1[0][0])
+        year2=int(data1[-1][0])+1
         
-        #xxx
-        #dt1=mdate.datetime.datetime(1960,1,1,0,0,0)
-        #dt2=mdate.datetime.datetime(2020,1,1,0,0,0)
-        #plt.xticks(pd.date_range(dt1,dt2,freq='Y'))
+        if (year2-year1)>=10 :        
+            dt12=[mdate.datetime.datetime(y,1,1,0,0,0) for y in range(year1,year2) ]
+            plt.xticks(dt12)
+            plt.xticks(rotation=90)
 
-        dt12=[mdate.datetime.datetime(y,1,1,0,0,0) for y in range(1965,2020) ]
-        plt.xticks(dt12)
-        plt.xticks(rotation=90)
+        if 3<(year2-year1)<10 :
+            dt12=[]
+            #dt13=[]
+            for y in range(year1,year2):
+                dt12.append(mdate.datetime.datetime(y,1,1,0,0,0))
+                #dt13.append(mdate.datetime.datetime(y,7,1,0,0,0))
+                dt12.append(mdate.datetime.datetime(y,7,1,0,0,0))
+            plt.xticks(dt12)
+            plt.xticks(rotation=0)
+            #plt.xticks(dt13)
+            #ax.xaxis.grid(True,which='major')
+            #ax.xaxis.grid(True,which='minor')
+            
+            
+
+        if (year2-year1)<=3 :
+            dt12=[]
+            for y in range(year1,year2):
+                dt12.append(mdate.datetime.datetime(y,1,1,0,0,0))
+                dt12.append(mdate.datetime.datetime(y,4,1,0,0,0))
+                dt12.append(mdate.datetime.datetime(y,7,1,0,0,0))
+                dt12.append(mdate.datetime.datetime(y,10,1,0,0,0))
+
+            plt.xticks(dt12)
+            plt.xticks(rotation=0)
+            
         #plt.savefig("testing_ML_Draw_mt_02.png")
         plt.savefig(outFile)
     else:
