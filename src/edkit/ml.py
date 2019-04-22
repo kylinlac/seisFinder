@@ -27,8 +27,10 @@ import zipfile
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdate
 import cartopy.crs as ccrs
+
 #import pandas as pd
 import numpy as np
+import pandas as pd
 
 
 #--------------------------------------------
@@ -539,5 +541,124 @@ def mlDraw_Heatmap_count_XX(data1,outFile,xi=10,xx=170,stepLon=1,yi=0,yx=70,step
     plt.savefig(outFile)
     
 
-       
+#------------------------------------------------
+'''
+----np
+mean 平均值
+sum 求和
+cumsum 累加
+cumprod 累乘
+std 方差
+var 标准差
+max 最大值
+min 最小值
+argmax 最大值索引
+argmin 最小值索引
+
+'''
+
+def mlTool_list_to_npArray(data11):
+    #ovs=np.ones(len(data11),np.integer)
+    '''
+    ovs=np.ones(len(data11),np.float32)
+    for i in range(len(data11)):
+        ovs[i]=data11[i]
+    return ovs    
+    '''
+    npa=np.array(data11)
+    return npa
+
+def mlTool_list_to_pdSeries(data11):
+    ser=pd.Series(data11)
+    return ser
+
+
+def mlCalc_Stats_mean(data11):    
+    bRes=False
+    fValue=0.0
+    if data11:
+        npData=mlTool_list_to_npArray(data11)
+        fValue=npData.mean()
+        bRes=True
+   
+    return (bRes,fValue)    
     
+def mlCalc_Stats_std(data11):    
+    bRes=False
+    fValue=0.0
+    if data11:
+        npData=mlTool_list_to_npArray(data11)
+        fValue=npData.std()
+        bRes=True
+   
+    return (bRes,fValue)    
+    
+def mlCalc_Stats_var(data11):    
+    bRes=False
+    fValue=0.0
+    if data11:
+        npData=mlTool_list_to_npArray(data11)
+        fValue=npData.var()
+        bRes=True
+   
+    return (bRes,fValue)    
+
+def mlCalc_Stats_min(data11):    
+    bRes=False
+    fValue=0.0
+    if data11:
+        npData=mlTool_list_to_npArray(data11)
+        fValue=npData.min()
+        bRes=True
+   
+    return (bRes,fValue)    
+
+def mlCalc_Stats_max(data11):    
+    bRes=False
+    fValue=0.0
+    if data11:
+        npData=mlTool_list_to_npArray(data11)
+        fValue=npData.max()
+        bRes=True
+   
+    return (bRes,fValue)    
+
+def mlCalc_Stats_count(data11):    
+    bRes=False
+    fValue=0.0
+    if data11:
+        fValue=len(data11)
+        bRes=True
+   
+    return (bRes,fValue)    
+
+def mlCalc_Stats_median(data11):    
+    bRes=False
+    fValue=0.0
+    if data11:
+        pds=mlTool_list_to_pdSeries(data11)
+        fValue=pds.median()
+        bRes=True
+   
+    return (bRes,fValue)    
+
+def mlCalc_Stats_skew(data11):    
+    bRes=False
+    fValue=0.0
+    if data11:
+        pds=mlTool_list_to_pdSeries(data11)
+        fValue=pds.skew()
+        bRes=True
+   
+    return (bRes,fValue)    
+
+def mlCalc_Stats_kurt(data11):    
+    bRes=False
+    fValue=0.0
+    if data11:
+        pds=mlTool_list_to_pdSeries(data11)
+        fValue=pds.kurt()
+        bRes=True
+   
+    return (bRes,fValue)    
+
