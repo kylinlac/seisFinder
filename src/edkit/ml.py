@@ -27,6 +27,7 @@ import zipfile
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdate
 import cartopy.crs as ccrs
+from matplotlib.ticker import AutoMinorLocator
 
 #import pandas as pd
 import numpy as np
@@ -368,7 +369,7 @@ def mlLoad_ml_1965(sPath):
 #------------------------------------------------
 #_easy=export image file
     
-def mlDraw_hyperCenter_withGIS__easy(data1,outFile,scaleSym,bGlobal,xi=60,xx=150,yi=0,yx=70):
+def mlDraw_epicenter_withGIS__easy(data1,outFile,scaleSym,bGlobal,xi=60,xx=150,yi=0,yx=70):
     if data1 :   
         lons=[float(d[7]) for d in data1]
         lats=[float(d[6]) for d in data1]
@@ -391,7 +392,7 @@ def mlDraw_hyperCenter_withGIS__easy(data1,outFile,scaleSym,bGlobal,xi=60,xx=150
         print("not data ...")
         
 
-def mlDraw_hyperCenter__easy(data1,outFile,scaleSym=1):
+def mlDraw_epicenter__easy(data1,outFile,scaleSym=1):
     if data1 :
         lons=[float(d[7]) for d in data1]
         lats=[float(d[6]) for d in data1]
@@ -417,9 +418,9 @@ def mlDraw_mt__easy(data1,outFile):
         shsi=[float(d[9]) for d in data1]
         dts=[mdate.datetime.datetime(int(d[0]),int(d[1]),int(d[2]),int(d[3]),int(d[4]),int(float(d[5]))) for d in data1]
 
-        fig = plt.figure(figsize=(20, 9))
+        fig = plt.figure(figsize=(15, 3))
         ax = fig.add_subplot(1, 1, 1)
-        plt.subplots_adjust(left=0.03, right=0.97, top=0.97, bottom=0.12)
+        #plt.subplots_adjust(left=0.03, right=0.97, top=0.97, bottom=0.12)
         ax.xaxis.set_major_formatter(mdate.DateFormatter('%Y-%m-%d'))#设置时间标签显示格式
         plt.vlines(dts,[0],shsi,color='blue') #[3]=ymin,shsi=ymax
          
@@ -430,8 +431,10 @@ def mlDraw_mt__easy(data1,outFile):
         if (year2-year1)>=10 :        
             dt12=[mdate.datetime.datetime(y,1,1,0,0,0) for y in range(year1,year2) ]
             plt.xticks(dt12)
-            plt.xticks(rotation=90)
+            plt.xticks(rotation=40)
+            plt.subplots_adjust(left=0.03, right=0.97, top=0.95, bottom=0.24)
 
+        '''
         if 3<(year2-year1)<10 :
             dt12=[]
             #dt13=[]
@@ -444,7 +447,15 @@ def mlDraw_mt__easy(data1,outFile):
             #plt.xticks(dt13)
             #ax.xaxis.grid(True,which='major')
             #ax.xaxis.grid(True,which='minor')
+        '''
+        if 3<(year2-year1)<10 :
+            minorLocator=AutoMinorLocator()
+            ax.xaxis.set_minor_locator(minorLocator)
             
+            plt.tick_params(which='both',width=2)
+            plt.tick_params(which='major',length=7)
+            plt.tick_params(which='minor',length=4,color='r')
+            plt.subplots_adjust(left=0.03, right=0.97, top=0.95, bottom=0.10)
             
 
         if (year2-year1)<=3 :
@@ -457,6 +468,7 @@ def mlDraw_mt__easy(data1,outFile):
 
             plt.xticks(dt12)
             plt.xticks(rotation=0)
+            plt.subplots_adjust(left=0.03, right=0.97, top=0.95, bottom=0.08)            
             
         #plt.savefig("testing_ML_Draw_mt_02.png")
         plt.savefig(outFile)
@@ -516,7 +528,7 @@ def mlDraw_Grid_count(data1,outFile,xi=10,xx=170,stepLon=1,yi=0,yx=70,stepLat=1)
     '''    
     
     
-def mlDraw_Heatmap_count_XX(data1,outFile,xi=10,xx=170,stepLon=1,yi=0,yx=70,stepLat=1):
+def mlDraw_Heatmap_count(data1,outFile,xi=10,xx=170,stepLon=1,yi=0,yx=70,stepLat=1):
     xm,ym=np.meshgrid(np.arange(xi,xx+1,stepLon),np.arange(yi,yx+1,stepLat))
     zm=np.ones(xm.shape,dtype=float) 
     
