@@ -3,7 +3,7 @@
 import os
 import datetime
 
-import pickle
+#import pickle
 import zipfile
 import codecs
 #import fnmatch
@@ -11,16 +11,14 @@ import codecs
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdate
 import cartopy.crs as ccrs
+from matplotlib.ticker import AutoMinorLocator
+
 #import pandas as pd
 import numpy as np
 
 
 #--------------------------------------------
-
-def qz_Convert_csv_to_sfml2(inFile,outFile):
-  pass
-
-  
+ 
 def qz_Convert_Merger_90(rootDir,outDir):
     ds=os.listdir(rootDir) #point=dir
     for d1 in ds:
@@ -372,8 +370,117 @@ def qz_Convert_Add_02(rootDir,outDir):
 
 
 #--------------------------------------------
+# date_string = "2018-11-30 13:53:59"
+# datetime.datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S")
+
+def qz_Read_sfqz1_xxxx(infile):
+    data1=[]    
+    with open(infile) as f1:
+        data1=f1.read().splitlines()
+    return data1
+
+                       
+def qz_Read_sfml1_inZip_0(zipFile,sfqz1File):
+    zf=zipFile
+    zfd="qz"
+    #dfn="DYU_60_212_51001_5_2121.sfqz1"
+    dfn=sfqz1File
+
+    azip=zipfile.ZipFile(zf)
+    ml2=azip.read(zfd+"/"+dfn).decode('utf-8')
+    
+    data1=ml2.splitlines(False) #True=keep n/rn,False=delete n/rn
+    data2=[d.split(",") for d in data1] #include \n
+    return data2    
+
                         
+def qz_Read_sfml1_inZip(zipFile,sfqz1File):
+    zf=zipFile
+    zfd="qz"
+    #dfn="DYU_60_212_51001_5_2121.sfqz1"
+    dfn=sfqz1File
+
+    azip=zipfile.ZipFile(zf)
+    ml2=azip.read(zfd+"/"+dfn).decode('utf-8')
+    
+    data1=ml2.splitlines(False) #True=keep n/rn,False=delete n/rn
+    #data2=[d.split(" ") for d in data1] #include \n
+    
+    #ok
+    #data2=[ [datetime.datetime.strptime(d.split(" ")[0]+" "+d.split(" ")[1], "%Y-%m-%d %H:%M:%S"),d.split(" ")[2]] for d in data1] 
+    dt2=[]
+    val2=[]
+    for d in data1:
+        ds=d.split(" ")
+        dt2.append(datetime.datetime.strptime(ds[0]+" "+ds[1], "%Y-%m-%d %H:%M:%S"))
+        val2.append(float(ds[2]))
+    
+    # 2 col
+    data2=[dt2,val2]
+    return data2    
                         
+ 
+#--------------------------------------------
+
+   
+def qzDraw__easy(data1,outFile):
+    #full year
+    if data1 :   
+        fig = plt.figure(figsize=(15, 5))
+        ax = fig.add_subplot(1, 1, 1)
+        ax.xaxis.set_major_formatter(mdate.DateFormatter('%Y-%m-%d'))#设置时间标签显示格式
+        #plt.vlines(data1[0],[0],data1[1],color='blue') #[3]=ymin,shsi=ymax
+        plt.plot(data1[0],data1[1])#,color='r')
+         
+        year1=int(data1[0][0].year)
+        year2=int(data1[0][-1].year)+1
+        
+        if (year2-year1)>=10 :        
+            dt12=[mdate.datetime.datetime(y,1,1,0,0,0) for y in range(year1,year2) ]
+            plt.xticks(dt12)
+            plt.xticks(rotation=-90)
+            plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.20)
+
+        '''
+        if 3<(year2-year1)<10 :
+            dt12=[]
+            #dt13=[]
+            for y in range(year1,year2):
+                dt12.append(mdate.datetime.datetime(y,1,1,0,0,0))
+                #dt13.append(mdate.datetime.datetime(y,7,1,0,0,0))
+                dt12.append(mdate.datetime.datetime(y,7,1,0,0,0))
+            plt.xticks(dt12)
+            plt.xticks(rotation=0)
+            #plt.xticks(dt13)
+            #ax.xaxis.grid(True,which='major')
+            #ax.xaxis.grid(True,which='minor')
+        '''
+        if 3<(year2-year1)<10 :
+            minorLocator=AutoMinorLocator()
+            ax.xaxis.set_minor_locator(minorLocator)
+            
+            plt.tick_params(which='both',width=2)
+            plt.tick_params(which='major',length=7)
+            plt.tick_params(which='minor',length=4,color='r')
+            plt.subplots_adjust(left=0.05, right=0.97, top=0.95, bottom=0.10)
+            
+
+        if (year2-year1)<=3 :
+            dt12=[]
+            for y in range(year1,year2):
+                dt12.append(mdate.datetime.datetime(y,1,1,0,0,0))
+                dt12.append(mdate.datetime.datetime(y,4,1,0,0,0))
+                dt12.append(mdate.datetime.datetime(y,7,1,0,0,0))
+                dt12.append(mdate.datetime.datetime(y,10,1,0,0,0))
+
+            plt.xticks(dt12)
+            plt.xticks(rotation=0)
+            plt.subplots_adjust(left=0.03, right=0.97, top=0.95, bottom=0.08)            
+            
+        #plt.savefig("testing_ML_Draw_mt_02.png")
+        plt.savefig(outFile)
+    else:
+        print("no data ...")        
                         
                         
                         

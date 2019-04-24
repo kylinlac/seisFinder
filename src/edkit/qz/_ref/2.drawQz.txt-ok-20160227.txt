@@ -1,0 +1,84 @@
+import matplotlib
+matplotlib.use('agg')
+#matplotlib.style.use('ggplot')
+
+import datetime
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+import glob
+
+def draw1(file1):
+  f=open(file1,"rt")
+  d1=f.readlines()
+  f.close()
+
+  #print "drawing ",file1
+
+  dts=[]
+  data1=[]
+  for i in range(len(d1)):
+    d1a=d1[i].split(' ')
+
+    if len(d1a)<7 :
+      continue
+
+    if d1a[6]=="\r\n":
+      continue
+
+    if d1a[6]=="null\r\n":
+      continue
+
+    if d1a[6]=="NULL\r\n":
+      continue
+
+    if d1a[6]=="Null\r\n":
+      cointinue
+
+    #print d1a
+    dt0=pd.Timestamp(datetime.datetime(int(d1a[0]),int(d1a[1]),int(d1a[2]),int(d1a[3]),int(d1a[4]),int(d1a[5])))
+    dts.append(dt0)
+    data1.append(float(d1a[6]))
+    #print dt0
+
+  dc=len(dts)
+  if dc<=0:
+    return
+
+  ts1=pd.Series(data1,dts)
+  matplotlib.pyplot.figure()
+  ts1.plot(figsize=(7,3),fontsize=9,linewidth=0.5)
+  #plt.xlabel("time")  #ok,but extent to windows
+  plt.ylabel("value")
+  #plt.title(file1)
+  plt.savefig(file1+".png")
+  #print "drawing ",file1
+  #print dt0
+
+
+
+def getFiles(sDir):
+  fs=glob.glob(sDir+"/dyu*.dat")
+  #print fs
+  return fs
+
+
+if __name__=="__main__":
+  
+  fs0=getFiles("./dyu60")
+  for i in range(len(fs0)):
+    draw1(fs0[i])
+
+  fs0=getFiles("./dyu02")
+  for i in range(len(fs0)):
+    draw1(fs0[i])
+
+  fs0=getFiles("./dyu01")
+  for i in range(len(fs0)):
+    draw1(fs0[i])
+
+  print "end ... "
+
+
+
