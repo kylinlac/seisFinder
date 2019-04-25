@@ -18,7 +18,7 @@ mlRead
 '''
 
 import os
-import sys
+#import sys
 import datetime
 
 import pickle
@@ -31,7 +31,7 @@ from matplotlib.ticker import AutoMinorLocator
 
 #import pandas as pd
 import numpy as np
-import pandas as pd
+#import pandas as pd
 
 
 #--------------------------------------------
@@ -213,6 +213,7 @@ def ml_Read_sfml2_checkOnly(infile):
             lat=float(vs[6])
             print(lon,lat)   
     return poss
+
 
 def ml_Read_sfml2_inZip(infile):
     zf=infile
@@ -567,16 +568,9 @@ min 最小值
 argmax 最大值索引
 argmin 最小值索引
 
-'''
+
 
 def mlTool_list_to_npArray(data11):
-    #ovs=np.ones(len(data11),np.integer)
-    '''
-    ovs=np.ones(len(data11),np.float32)
-    for i in range(len(data11)):
-        ovs[i]=data11[i]
-    return ovs    
-    '''
     npa=np.array(data11)
     return npa
 
@@ -673,4 +667,4 @@ def mlCalc_Stats_kurt(data11):
         bRes=True
    
     return (bRes,fValue)    
-
+'''
