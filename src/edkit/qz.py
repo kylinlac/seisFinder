@@ -373,13 +373,15 @@ def qz_Convert_Add_02(rootDir,outDir):
 # date_string = "2018-11-30 13:53:59"
 # datetime.datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S")
 
+'''
 def qz_Read_sfqz1_xxxx(infile):
     data1=[]    
     with open(infile) as f1:
         data1=f1.read().splitlines()
     return data1
+'''
 
-                       
+'''                       
 def qz_Read_sfml1_inZip_0(zipFile,sfqz1File):
     zf=zipFile
     zfd="qz"
@@ -390,11 +392,33 @@ def qz_Read_sfml1_inZip_0(zipFile,sfqz1File):
     ml2=azip.read(zfd+"/"+dfn).decode('utf-8')
     
     data1=ml2.splitlines(False) #True=keep n/rn,False=delete n/rn
-    data2=[d.split(",") for d in data1] #include \n
+    data2=[d.split(" ") for d in data1] #include \n
     return data2    
+'''
 
-                        
-def qz_Read_sfml1_inZip(zipFile,sfqz1File):
+
+def qz_Read_sfqz1(infile):
+    data2=[[],[]]    
+    #no_data=("999.000","9999.000","99999.0000","999999.0000")
+    no_data=("999.000","9999.000","99999.0000","999999.0000","9999","99999","999999")
+    with open(infile) as f1:
+        data1=f1.read().splitlines()
+        
+        dt2=[]
+        val2=[]
+        for d in data1:
+            ds=d.split(" ")
+            if ds[2] in no_data:
+                continue
+            
+            dt2.append(datetime.datetime.strptime(ds[0]+" "+ds[1], "%Y-%m-%d %H:%M:%S"))
+            val2.append(float(ds[2]))
+        data2=[dt2,val2]
+        
+    return data2
+                   
+     
+def qz_Read_sfqz1_inZip(zipFile,sfqz1File):
     zf=zipFile
     zfd="qz"
     #dfn="DYU_60_212_51001_5_2121.sfqz1"

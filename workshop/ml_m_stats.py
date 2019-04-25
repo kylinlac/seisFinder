@@ -5,7 +5,8 @@ sys.path.append("../src")
 from edkit import ml
 import one_stats
 
-sDataPath="D:\prjs_github\seisFinder\data"
+#sDataPath="D:\prjs_github\seisFinder\data"
+sDataPath="../data"
 sCurrPath=sys.path[0]
 
 
