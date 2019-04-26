@@ -2,8 +2,7 @@ import os,sys
 import datetime
 
 sys.path.append("../src")
-from edkit import ml
-import one_stats
+from edkit import ml,one_stats
 
 #sDataPath="D:\prjs_github\seisFinder\data"
 sDataPath="../data"
